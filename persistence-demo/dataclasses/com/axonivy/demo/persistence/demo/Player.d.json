@@ -6,7 +6,7 @@
   "entity" : { },
   "fields" : [ {
     "name" : "id",
-    "type" : "Integer",
+    "type" : "Long",
     "comment" : "Identifier",
     "modifiers" : [ "PERSISTENT", "ID", "GENERATED" ],
     "entity" : {
