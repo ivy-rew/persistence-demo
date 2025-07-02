@@ -2,6 +2,8 @@ package com.axonivy.demo.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.hibernate.StatelessSession;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,38 @@ class PlayerRepoIvyTest {
     players.delete(persisted.get());
     assertThat(players.findAll().toList())
         .isEmpty();
+  }
+
+  @Test
+  void useQuery() {
+    var orville = new Player();
+    orville.setFirstName("Orville");
+    orville.setLastName("Wright");
+    orville.setBirthDate(new Date(1871, 8, 19));
+
+    var wilbur = new Player();
+    wilbur.setFirstName("Wilbur");
+    wilbur.setLastName("Wright");
+    wilbur.setBirthDate(new Date(1867, 4, 16));
+
+    var louis = new Player();
+    louis.setFirstName("Louis Charles Joseph");
+    louis.setLastName("Blériot");
+    louis.setBirthDate(new Date(1872, 7, 1));
+
+    List<Player> pilots = List.of(orville, wilbur, louis);
+    players.insertAll(pilots);
+
+    List<Player> wrightBrothers = players.findByLastName("Wright");
+    assertThat(wrightBrothers)
+        .extracting(Player::getFirstName)
+        .containsOnly("Orville", "Wilbur");
+
+    assertThat(players.findByLastName("Blériot"))
+        .extracting(Player::getFirstName)
+        .containsOnly("Louis Charles Joseph");
+
+    players.deleteAll(pilots);
   }
 
   @BeforeEach
